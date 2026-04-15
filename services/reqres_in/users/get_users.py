@@ -9,14 +9,15 @@ class GetUsers(BaseAPI):
         super().__init__(base_url=env_config.reqres_url, api_key=env_config.reqres_api_key)
 
 
-    def get_users(self):
-        """Получение пользователя по ID.
+    def get_users(self, page=1):
+        """Получение списка пользователей по номеру страницы
 
                Args:
-                   user_id (int): ID пользователя
+                   page (int): номер страницы
 
                Returns:
                    requests.Response: Ответ от сервера
                """
-        response = self.session.get(f"{self.base_url}/users")
+
+        response = self.session.get(f"{self.base_url}/users?page={page}")
         return response
