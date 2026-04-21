@@ -1,6 +1,9 @@
 from typing import List
-from pydantic import BaseModel, Field, EmailStr, HttpUrl
+from datetime import datetime
+from pydantic import BaseModel, Field, EmailStr, HttpUrl, field_validator
+from faker import Faker
 
+fake = Faker()
 
 class User(BaseModel):
     id: int = Field(gt=0)
@@ -22,3 +25,28 @@ class PaginationResponse(BaseModel):
     total_pages: int = Field(ge=0)
     data: List[User]
     support: Support
+
+
+class CreateUserRequest(BaseModel):
+    name: str = Field(default_factory=fake.name, min_length=2, max_length=25)
+    job: str = Field(default_factory=fake.job)
+
+    @field_validator('name')
+    @classmethod
+    def name_validator(cls, v):
+        if not v.istitle():
+            raise ValueError(f'{v} does not start with a capital letter')
+
+
+class CreateUserResponse(BaseModel):
+    name: str
+    job: str
+    id: str
+    createdAt: datetime
+
+    @field_validator('id')
+    @classmethod
+    def id_validator(cls, v):
+        if int(v) < 1:
+            raise ValueError(f'Error:id < 1 ({v})')
+        return v
