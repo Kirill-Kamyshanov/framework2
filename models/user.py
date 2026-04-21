@@ -1,5 +1,6 @@
 from typing import List
 from datetime import datetime
+from typing import Optional
 from pydantic import BaseModel, Field, EmailStr, HttpUrl, field_validator
 from faker import Faker
 
@@ -50,3 +51,15 @@ class CreateUserResponse(BaseModel):
         if int(v) < 1:
             raise ValueError(f'Error:id < 1 ({v})')
         return v
+
+
+class UpdateUserRequest(BaseModel):
+    name: Optional[str] = Field(default_factory=fake.name, min_length=2, max_length=25)
+    job: Optional[str] = Field(default_factory=fake.job)
+
+
+
+class UpdateUserResponse(BaseModel):
+    name: str
+    job: str
+    updatedAt: datetime
