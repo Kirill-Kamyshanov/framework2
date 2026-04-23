@@ -31,8 +31,11 @@ class GetUsers(BaseAPI):
         validated = UsersListResponse.model_validate(response.json())
 
 
-        return response, validated
+        return response, validated, page
 
-def assert_users_data_is_correct(response, validated_data):
+def assert_users_data_is_correct(response, validated_data, page):
     assert response.status_code == 200, f"Ожидался статус 200, но получен {response.status_code}: {response.text}"
     assert validated_data.data is not None, f"В ответе отсутствует ключ data"
+    assert validated_data.page == page, f"Ожидалось page={validated_data.page}, но пришло {page}"
+    assert len(validated_data.data) == validated_data.per_page,\
+        f"Несоответствие кол-ва объектов в data({len(validated_data.data)}) и per_page={len(validated_data.data)}"
