@@ -1,3 +1,6 @@
+import allure
+import pytest
+
 from services.reqres_in.users.models.user import UpdateUserRequest, UpdateUserResponse
 from services.reqres_in.users.patch_update import UpdateUserPatch
 from services.reqres_in.users.post_create import CreateUser

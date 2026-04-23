@@ -1,3 +1,6 @@
+import allure
+import pytest
+
 from services.reqres_in.users.get_user import GetUser
 from services.reqres_in.users.models.user import UserData
 

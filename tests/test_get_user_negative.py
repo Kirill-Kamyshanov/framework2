@@ -1,3 +1,6 @@
+import allure
+import pytest
+
 from services.reqres_in.users.get_user import GetUser
 
 def test_get_user_negative(env_config):
