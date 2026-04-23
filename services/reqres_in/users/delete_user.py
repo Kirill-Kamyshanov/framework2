@@ -9,7 +9,7 @@ class DeleteUser(BaseAPI):
         """
         super().__init__(base_url=env_config.reqres_url, api_key=env_config.reqres_api_key)
 
-    def delete(self, user_id):
+    def delete(self, user_id: int):
         """Удаление пользователя
         Args:
             user_id (int): ID пользователя
@@ -18,8 +18,5 @@ class DeleteUser(BaseAPI):
             requests.Response: Ответ от сервера
         """
         response = self.session.delete(f'{self.base_url}/{user_id}')
-
-        # Прикрепляем ответ в JSON к отчёту
-        helper.attach_response(response)
 
         return response
