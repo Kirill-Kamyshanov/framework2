@@ -6,7 +6,6 @@ from services.reqres_in.users.models.user import CreateUserRequest, CreateUserRe
 from faker import Faker
 
 fake = Faker()
-#
 
 class TestCrudOperations:
 

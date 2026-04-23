@@ -42,16 +42,14 @@ class UsersListResponse(BaseModel):
 
 class CreateUserRequest(BaseModel):
     """запрос на создание пользователя"""
+    name: str = Field(default_factory=fake.name, min_length=2, max_length=25)
+    job: str = Field(default_factory=fake.job)
 
-    class CreateUserRequest(BaseModel):
-        name: str = Field(default_factory=fake.name, min_length=2, max_length=25)
-        job: str = Field(default_factory=fake.job)
-
-        @field_validator('name')
-        @classmethod
-        def name_validator(cls, v):
-            if not v.istitle():
-                raise ValueError(f'{v} does not start with a capital letter')
+    @field_validator('name')
+    @classmethod
+    def name_validator(cls, v):
+        if not v.istitle():
+            raise ValueError(f'{v} does not start with a capital letter')
 
 
 
