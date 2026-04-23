@@ -1,4 +1,5 @@
 from services.base_api import BaseAPI
+from services.reqres_in.users.models.user import UpdateUserResponse
 from utils.helper import helper
 
 class UpdateUserPatch(BaseAPI):
@@ -21,9 +22,19 @@ class UpdateUserPatch(BaseAPI):
             requests.Response: Ответ от сервера
         """
         data = {"name": name, "job": job}
+
         response = self.session.patch(f"{self.base_url}/users/{user_id}", json=data)
 
         # Прикрепляем ответ в JSON к отчёту
         helper.attach_response(response)
 
-        return response
+        validated = UpdateUserResponse.model_validate(response.json())
+
+
+        return response, validated
+
+
+def assert_user_updated_correctly(response, validated_data, name, job):
+    assert response.status_code == 200, f"Ожидался статус 201, но получен {response.status_code}: {response.text}"
+    assert validated_data.name == name, f'Ожидалось name = {name}, но получено {validated_data.name}'
+    assert validated_data.job == job, f'Ожидалось job = {job}, но получено {validated_data.job}'

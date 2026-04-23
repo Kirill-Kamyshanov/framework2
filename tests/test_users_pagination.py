@@ -7,9 +7,8 @@ from services.reqres_in.users.models.user import UsersListResponse
 
 def test_users_pagination(env_config):
     page = 1
-    response = GetUsers(env_config).get_users(page)
-    assert response.status_code == 200, f'Incorrect response code: {response.status_code}'
-    validated = UsersListResponse(**response.json())
-    assert validated.page == page, f'{validated.page} != {page}'
-    assert len(validated.data) == validated.per_page, f'{len(validated.data)} != {validated.per_page}'
+    response, validated_data = GetUsers(env_config).get_users(page)
+    print(validated_data)
+    assert validated_data.page == page
+    assert len(validated_data.data) == validated_data.per_page
 

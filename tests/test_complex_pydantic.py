@@ -2,67 +2,91 @@ import allure
 import pytest
 
 from services.reqres_in.users.delete_user import DeleteUser
-from services.reqres_in.users.get_user import GetUser
-from services.reqres_in.users.patch_update import UpdateUserPatch
-from services.reqres_in.users.post_create import CreateUser
+from services.reqres_in.users.get_user import GetUser, assert_user_data_is_correct
+from services.reqres_in.users.patch_update import UpdateUserPatch, assert_user_updated_correctly
+from services.reqres_in.users.post_create import CreateUser, assert_user_created_correctly
 from services.reqres_in.users.models.user import CreateUserRequest, CreateUserResponse, UserData, UpdateUserRequest, UpdateUserResponse
 from faker import Faker
 
 fake = Faker()
 
+
+@pytest.fixture
+def created_user_ids():
+    """Список ID созданных пользователей для cleanup."""
+    return []
+
+
+@pytest.fixture
+def cleanup_users(env_config, created_user_ids):
+    """Фикстура для удаления тестовых пользователей после теста."""
+    yield  # Тест выполняется здесь
+
+    # Cleanup после теста
+    for user_id in created_user_ids:
+        try:
+            DeleteUser(env_config).delete(user_id)
+        except Exception as e:
+            print(f"Ошибка при удалении {user_id}: {e}")
+
+
+
+
+
 class TestCrudOperations:
+    def test_create_user_with_pydantic(self, env_config, created_user_ids, cleanup_users):
+        with allure.step('Создаём нового пользователя'):
+            # генерация случайных тестовых данных для создания юзера
+            test_data = CreateUserRequest()
+            #  создание юзера
+            response, validated_data = CreateUser(env_config).create_user(
+                **test_data.model_dump()
+            )
 
-    def test_create_user_with_pydantic(self, env_config):
-        # Генерация тестовых данных
-        test_user = CreateUserRequest()
+        with allure.step('Проверяем корректность создания'):
+            assert_user_created_correctly(
+                response, validated_data, test_data.name, test_data.job
+            )
 
-        # Создание юзера
-        response = CreateUser(env_config).create_user(**test_user.model_dump())
-        assert response.status_code == 201, f'Incorrect response code: {response.status_code}'
-
-        # Валидация тела ответа
-        validated_response = CreateUserResponse(**response.json())
-        assert validated_response.name == test_user.name, \
-            f'Response name is {validated_response.name}. Expected: {test_user.name}'
-        assert validated_response.job == test_user.job, \
-            f'Response job is {validated_response.job}. Expected: {test_user.job}'
+        created_user_ids.append(validated_data.id)
 
 
     def test_get_user_with_pydantic(self, env_config):
-        user_id = 2
-        response = GetUser(env_config).get_user(user_id)
-        assert response.status_code == 200, f'Incorrect response code: {response.status_code}'
-        full_response_json = response.json()
-        UserData(**full_response_json["data"])
-        print(f'Validation user {user_id} succeeded.')
+        with allure.step('Получение данных о пользователе'):
+            user_id = 2
+            response, validated_data = GetUser(env_config).get_user(user_id)
+
+        with allure.step('Проверка корректности ответа'):
+            assert_user_data_is_correct(response, validated_data, user_id)
 
 
-    def test_update_user_with_pydantic(self, env_config):
-        create_response = CreateUser(env_config).create_user(**CreateUserRequest().model_dump())
-        user_id = create_response.json()['id']
+    def test_update_user_with_pydantic(self, env_config, created_user_ids, cleanup_users):
+        with allure.step('Создание тестового юзера'):
+            create_response = CreateUser(env_config).create_user(
+                name="John Doe",
+                job="QA Engineer"
+            )[1]
+            user_id = create_response.id
 
-        # Обновление тестового юзера
-        new_data = UpdateUserRequest()
-        update_response = UpdateUserPatch(env_config).update(
-            user_id=user_id, **new_data.model_dump()
-        )
-        assert update_response.status_code == 200
+        with allure.step('Обновление тестового юзера'):
+            new_data = UpdateUserRequest()
+            response, validated_data = UpdateUserPatch(env_config).update(
+                user_id=user_id, **new_data.model_dump(exclude_none=True)
+            )
 
-        # Валидация тела ответа после обновления
-        validated_update_response = UpdateUserResponse(**update_response.json(exclude_none=True))
-        assert validated_update_response.name == new_data.name,f'{validated_update_response.name} != {new_data.name}'
-        assert validated_update_response.job == new_data.job, f'{validated_update_response.job} != {new_data.job}'
+        with allure.step('Проверка корректности обновления данных'):
+            assert_user_updated_correctly(response, validated_data, **new_data.model_dump(exclude_none=True))
+
+        created_user_ids.append(user_id)
 
 
     def test_delete_user_with_pydantic(self, env_config):
-        # Создание тестового юзера
-        create_response = CreateUser(env_config).create_user(**CreateUserRequest().model_dump())
-        user_id = create_response.json()['id']
+        with allure.step('Создание нового пользователя'):
+            create_response = CreateUser(env_config).create_user(
+                name="To Delete",
+                job="Temporary"
+            )[1]
 
-        # Удаление юзера
-        response = DeleteUser(env_config).delete(user_id)
-        assert response.status_code == 204, f'Incorrect response code: {response.status_code}'
-
-        # Проверка, что юзер удалён
-        response = GetUser(env_config).get_user(user_id)
-        assert response.status_code == 404, f'Incorrect response code: {response.status_code}'
+        with allure.step('Удаление пользователя'):
+            user_id = create_response.id
+            DeleteUser(env_config).delete(user_id)

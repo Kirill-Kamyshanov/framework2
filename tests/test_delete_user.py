@@ -9,7 +9,7 @@ from services.reqres_in.users.delete_user import DeleteUser
 @allure.title('Удаление пользователя')
 @allure.testcase("https://jira.example.com/TC-1", "TC-2")
 def test_delete_user(env_config):
-    with allure.step('Создаём нового пользователя'):
+    with allure.step('Создание нового пользователя'):
             create_response  = CreateUser(env_config).create_user(
             name="To Delete",
             job="Temporary"
@@ -17,5 +17,4 @@ def test_delete_user(env_config):
 
     with allure.step('Удаление пользователя'):
         user_id = create_response.id
-        response = DeleteUser(env_config).delete(user_id)
-        assert response.status_code == 204
+        DeleteUser(env_config).delete(user_id)

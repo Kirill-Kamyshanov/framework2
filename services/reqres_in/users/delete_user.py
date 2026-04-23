@@ -18,5 +18,5 @@ class DeleteUser(BaseAPI):
             requests.Response: Ответ от сервера
         """
         response = self.session.delete(f'{self.base_url}/{user_id}')
-
+        assert response.status_code == 204
         return response
