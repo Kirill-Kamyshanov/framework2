@@ -1,4 +1,5 @@
 from services.base_api import BaseAPI
+from utils.helper import helper
 
 class UpdateUserPatch(BaseAPI):
     def __init__(self, env_config):
@@ -21,4 +22,8 @@ class UpdateUserPatch(BaseAPI):
         """
         data = {"name": name, "job": job}
         response = self.session.patch(f"{self.base_url}/users/{user_id}", json=data)
+
+        # Прикрепляем ответ в JSON к отчёту
+        helper.attach_response(response)
+
         return response

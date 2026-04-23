@@ -2,7 +2,7 @@ from services.reqres_in.users.delete_user import DeleteUser
 from services.reqres_in.users.get_user import GetUser
 from services.reqres_in.users.patch_update import UpdateUserPatch
 from services.reqres_in.users.post_create import CreateUser
-from services.reqres_in.users.models.user import CreateUserRequest, CreateUserResponse, User, UpdateUserRequest, UpdateUserResponse
+from services.reqres_in.users.models.user import CreateUserRequest, CreateUserResponse, UserData, UpdateUserRequest, UpdateUserResponse
 from faker import Faker
 
 fake = Faker()
@@ -31,7 +31,7 @@ class TestCrudOperations:
         response = GetUser(env_config).get_user(user_id)
         assert response.status_code == 200, f'Incorrect response code: {response.status_code}'
         full_response_json = response.json()
-        User(**full_response_json["data"])
+        UserData(**full_response_json["data"])
         print(f'Validation user {user_id} succeeded.')
 
 

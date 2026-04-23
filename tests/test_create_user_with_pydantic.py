@@ -1,5 +1,5 @@
 from services.reqres_in.users.post_create import CreateUser
-from models.user import CreateUserRequest, CreateUserResponse
+from services.reqres_in.users.models.user import CreateUserRequest, CreateUserResponse
 
 
 class TestCreateUser:

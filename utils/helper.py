@@ -10,3 +10,5 @@ class Helper:
             name="API Response",
             attachment_type=allure.attachment_type.JSON
         )
+
+helper = Helper()

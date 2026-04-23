@@ -2,7 +2,6 @@ import allure
 import pytest
 from services.reqres_in.users.post_create import CreateUser, assert_user_created_correctly
 from services.reqres_in.users.delete_user import DeleteUser
-from utils.helper import Helper
 
 
 @pytest.fixture
@@ -26,7 +25,7 @@ def cleanup_users(env_config, created_user_ids):
 
 @allure.feature('Users')
 class TestUser:
-    helper = Helper()
+
 
     @pytest.mark.smoke
     @pytest.mark.regression
@@ -38,7 +37,6 @@ class TestUser:
                 name="John Doe",
                 job="QA Engineer"
             )
-            self.helper.attach_response(response)
 
         with allure.step('Проверяем корректность создания'):
             assert_user_created_correctly(

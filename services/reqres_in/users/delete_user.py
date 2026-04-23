@@ -1,4 +1,5 @@
 from services.base_api import BaseAPI
+from utils.helper import helper
 
 class DeleteUser(BaseAPI):
     def __init__(self, env_config):
@@ -17,4 +18,8 @@ class DeleteUser(BaseAPI):
             requests.Response: Ответ от сервера
         """
         response = self.session.delete(f'{self.base_url}/{user_id}')
+
+        # Прикрепляем ответ в JSON к отчёту
+        helper.attach_response(response)
+
         return response

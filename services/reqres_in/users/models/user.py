@@ -7,9 +7,6 @@ from faker import Faker
 fake = Faker()
 
 
-# В models/users поменять импорты на текущий файл
-
-
 
 class Support(BaseModel):
     """вспомогательная структура с полями url и text"""
@@ -17,7 +14,7 @@ class Support(BaseModel):
     text: str
 
 
-# Поменять в тестах User -> UserData
+
 class UserData(BaseModel):
     """данные пользователя с полями id, email, first_name, last_name, avatar"""
     id: int = Field(gt=0)
@@ -33,7 +30,6 @@ class SingleUserResponse(BaseModel):
     support: Support
 
 
-# поменять с PaginationResponse на UsersListResponse
 class UsersListResponse(BaseModel):
     """ответ при получении списка пользователей"""
     page: int = Field(gt=0)

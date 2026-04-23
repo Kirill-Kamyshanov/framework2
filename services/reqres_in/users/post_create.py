@@ -1,5 +1,6 @@
 from services.base_api import BaseAPI
 from services.reqres_in.users.models.user import CreateUserResponse
+from utils.helper import helper
 
 
 class CreateUser(BaseAPI):
@@ -16,6 +17,10 @@ class CreateUser(BaseAPI):
         """
         data = {"name": name, "job": job}
         response = self.session.post(f"{self.base_url}/users", json=data)
+
+        # Прикрепляем ответ в JSON к отчёту
+        helper.attach_response(response)
+
         validated = None
         if validate:
             validated = CreateUserResponse.model_validate(response.json())

@@ -1,4 +1,5 @@
 from services.base_api import BaseAPI
+from utils.helper import helper
 
 class GetUsers(BaseAPI):
     def __init__(self, env_config):
@@ -20,4 +21,8 @@ class GetUsers(BaseAPI):
                """
 
         response = self.session.get(f"{self.base_url}/users?page={page}")
+
+        # Прикрепляем ответ в JSON к отчёту
+        helper.attach_response(response)
+
         return response
