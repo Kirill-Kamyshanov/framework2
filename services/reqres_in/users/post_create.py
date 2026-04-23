@@ -14,6 +14,7 @@ class CreateUser(BaseAPI):
         Args:
             name (str): Имя пользователя
             job (str): Должность пользователя
+            validate (bool): Нужна ли валидация тела ответа от сервера
         """
         data = {"name": name, "job": job}
         response = self.session.post(f"{self.base_url}/users", json=data)
@@ -21,6 +22,7 @@ class CreateUser(BaseAPI):
         # Прикрепляем ответ в JSON к отчёту
         helper.attach_response(response)
 
+        # Валидация ответа по схеме
         validated = None
         if validate:
             validated = CreateUserResponse.model_validate(response.json())

@@ -1,14 +1,17 @@
 import allure
 import pytest
 
-from services.reqres_in.users.get_user import GetUser
-from services.reqres_in.users.models.user import UserData
+from services.reqres_in.users.get_user import GetUser, assert_user_data_is_correct
+
 
 def test_user_validation(env_config):
-    user_id = 1
-    full_response_json = GetUser(env_config).get_user(user_id).json()
+    with allure.step('Получение данных о пользователе'):
+        user_id = 1
+        response, full_response_json = GetUser(env_config).get_user(user_id)
 
-    validate = UserData(**full_response_json["data"])
-    assert validate.id == user_id, f'invalid user_id: {user_id}'
-    print(f'Validation user {user_id} succeeded.')
+    with allure.step('Проверка корректности ответа'):
+        assert_user_data_is_correct(response, full_response_json, user_id)
+        print(f'Validation user {user_id} succeeded.')
+
+    # Проверка та же, что и в test_get_user.py. Предлагаю этот файл тупо удалить
 

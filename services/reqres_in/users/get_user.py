@@ -11,14 +11,16 @@ class GetUser(BaseAPI):
         super().__init__(base_url=env_config.reqres_url, api_key=env_config.reqres_api_key)
 
 
-    def get_user(self, user_id: int):
+    def get_user(self, user_id: int, validate: bool =True):
         """Получение пользователя по ID.
 
                Args:
                    user_id (int): ID пользователя
+                   validate (bool): нужна ли валидация тела ответа
 
                Returns:
                    requests.Response: Ответ от сервера
+                   validated: провалидированное тело ответа от сервера
                """
         response = self.session.get(f"{self.base_url}/users/{user_id}")
 
@@ -26,8 +28,9 @@ class GetUser(BaseAPI):
         helper.attach_response(response)
 
         # Валидация ответа по схеме
-        validated = SingleUserResponse.model_validate(response.json())
-
+        validated = None
+        if validate:
+            validated = SingleUserResponse.model_validate(response.json())
         return response, validated
 
 
