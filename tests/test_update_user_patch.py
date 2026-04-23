@@ -1,5 +1,5 @@
 from services.reqres_in.users.post_create import CreateUser
-from services.reqres_in.users.patch_update import UpdateUser
+from services.reqres_in.users.patch_update import UpdateUserPatch
 
 def test_update_user(env_config):
     create_response = CreateUser(env_config).create_user(
@@ -8,7 +8,7 @@ def test_update_user(env_config):
     )
     user_id = create_response.json()['id']
 
-    response = UpdateUser(env_config).update(
+    response = UpdateUserPatch(env_config).update(
         user_id=user_id,
         name="Bob Smith",
         job="Senior QA"

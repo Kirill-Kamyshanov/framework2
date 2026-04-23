@@ -1,8 +1,8 @@
 from services.reqres_in.users.delete_user import DeleteUser
 from services.reqres_in.users.get_user import GetUser
-from services.reqres_in.users.patch_update import UpdateUser
+from services.reqres_in.users.patch_update import UpdateUserPatch
 from services.reqres_in.users.post_create import CreateUser
-from models.user import CreateUserRequest, CreateUserResponse, User, UpdateUserRequest, UpdateUserResponse
+from services.reqres_in.users.models.user import CreateUserRequest, CreateUserResponse, User, UpdateUserRequest, UpdateUserResponse
 from faker import Faker
 
 fake = Faker()
@@ -41,7 +41,7 @@ class TestCrudOperations:
 
         # Обновление тестового юзера
         new_data = UpdateUserRequest()
-        update_response = UpdateUser(env_config).update(
+        update_response = UpdateUserPatch(env_config).update(
             user_id=user_id, **new_data.model_dump()
         )
         assert update_response.status_code == 200
