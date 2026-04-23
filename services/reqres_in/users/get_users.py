@@ -1,4 +1,5 @@
 from services.base_api import BaseAPI
+from services.reqres_in.users.models.user import UsersListResponse
 from utils.helper import helper
 
 class GetUsers(BaseAPI):
@@ -20,9 +21,18 @@ class GetUsers(BaseAPI):
                    requests.Response: Ответ от сервера
                """
 
+        # Отправка запроса, получение ответа
         response = self.session.get(f"{self.base_url}/users?page={page}")
 
         # Прикрепляем ответ в JSON к отчёту
         helper.attach_response(response)
 
-        return response
+        # Валидация тела ответа
+        validated = UsersListResponse.model_validate(response.json())
+
+
+        return response, validated
+
+def assert_users_data_is_correct(response, validated_data):
+    assert response.status_code == 200, f"Ожидался статус 200, но получен {response.status_code}: {response.text}"
+    assert validated_data.data is not None, f"В ответе отсутствует ключ data"
