@@ -1,5 +1,3 @@
-# Тест удаления пользователя (DELETE /api/users/2)
-
 import allure
 import pytest
 
@@ -8,27 +6,26 @@ from services.reqres_in.users.get_user import GetUser, assert_user_data_is_corre
 from services.reqres_in.users.get_users import GetUsers, assert_users_data_is_correct
 from services.reqres_in.users.patch_update import assert_user_updated_correctly, UpdateUserPatch
 from services.reqres_in.users.post_create import CreateUser, assert_user_created_correctly
-from services.reqres_in.users.models.user import CreateUserRequest, UpdateUserRequest
 from services.reqres_in.users.put_update import UpdateUserPut, assert_user_updated_put_correctly
+from services.reqres_in.users.models.user import CreateUserRequest, UpdateUserRequest
 
 
-@pytest.fixture
-def created_user_ids():
-    """Список ID созданных пользователей для cleanup."""
-    return []
-
-
-@pytest.fixture
-def cleanup_users(env_config, created_user_ids):
-    """Фикстура для удаления тестовых пользователей после теста."""
-    yield  # Тест выполняется здесь
-
-    # Cleanup после теста
-    for user_id in created_user_ids:
-        try:
-            DeleteUser(env_config).delete(user_id)
-        except Exception as e:
-            print(f"Ошибка при удалении {user_id}: {e}")
+# @pytest.fixture
+# def created_user_ids():
+#     """Список ID созданных пользователей для cleanup."""
+#     return []
+#
+#
+# @pytest.fixture
+# def cleanup_users(env_config, created_user_ids):
+#     """Фикстура для удаления тестовых пользователей после теста."""
+#     yield
+#
+#     for user_id in created_user_ids:
+#         try:
+#             DeleteUser(env_config).delete(user_id)
+#         except Exception as e:
+#             print(f"Ошибка при удалении {user_id}: {e}")
 
 
 
@@ -65,7 +62,7 @@ class TestUsers:
     @pytest.mark.regression
     @allure.title('Создание нового пользователя')
     @allure.testcase("https://jira.example.com/TC-1", "TC-1")
-    def test_create_user(self, env_config, cleanup_users, created_user_ids):
+    def test_create_user(self, env_config, user_data, delete_user):
         with allure.step('Создаём нового пользователя'):
             # генерация случайных тестовых данных для создания юзера
             test_data = CreateUserRequest()
@@ -74,14 +71,16 @@ class TestUsers:
                 **test_data.model_dump()
             )
 
-        with allure.step('Проверяем корректность создания'):
+        with allure.step('Проверка корректности создания'):
             assert_user_created_correctly(
                 response, validated_data, test_data.name, test_data.job
             )
 
-        created_user_ids.append(validated_data.id)
+        # добавление данных юзера в контейнер для удаления
+        user_data.update(validated_data.model_dump())
 
-    def test_update_user_put(self, env_config, created_user_ids, cleanup_users):
+
+    def test_update_user_put(self, env_config):
         with allure.step('Получение исходных данных о пользователе'):
             user_id = 2
             response, _ = GetUser(env_config).get_user(user_id)
@@ -96,10 +95,10 @@ class TestUsers:
         with allure.step('Проверка корректности обновления данных'):
             assert_user_updated_put_correctly(response, validated_data, **new_data.model_dump(exclude_none=True))
 
-        created_user_ids.append(user_id)
 
 
-    def test_update_user_patch(self, env_config, created_user_ids, cleanup_users):
+
+    def test_update_user_patch(self, env_config):
         with allure.step('Получение исходных данных о пользователе'):
             user_id = 2
             response, _ = GetUser(env_config).get_user(user_id)
@@ -114,7 +113,6 @@ class TestUsers:
         with allure.step('Проверка корректности обновления данных'):
             assert_user_updated_correctly(response, validated_data, **new_data.model_dump(exclude_none=True))
 
-        created_user_ids.append(user_id)
 
 
     @pytest.mark.smoke

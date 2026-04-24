@@ -1,5 +1,6 @@
 import pytest
 from config.environments import Environment, environments, EnvironmentConfig
+from services.reqres_in.users.delete_user import DeleteUser
 
 
 def pytest_addoption(parser):
@@ -30,3 +31,28 @@ def env_config(env) -> EnvironmentConfig:
     print(f"\nОкружение: {env}")
     print(f"{environments[env]}\n")
     return environments[env]
+
+
+
+
+
+
+@pytest.fixture
+def user_data() -> dict:
+    """Контейнер для хранения данных созданного пользователя"""
+    return {}
+
+
+
+# Использую только в test_create_user, т.к. я больше нигде юзера не создаю
+@pytest.fixture
+def delete_user(env_config, user_data):
+    """Автоматическая очистка созданного пользователя после теста"""
+    yield
+
+    user_id = user_data["id"]
+    try:
+        DeleteUser(env_config).delete(user_id)
+        print(f"Пользователь {user_id} успешно удалён")
+    except Exception as e:
+        print(f"Ошибка при удалении {user_id}: {e}")
