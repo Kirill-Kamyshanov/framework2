@@ -1,5 +1,4 @@
 from services.base_api import BaseAPI
-from utils.helper import helper
 
 class DeleteUser(BaseAPI):
     def __init__(self, env_config):
