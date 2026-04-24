@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Literal
 from pydantic import BaseModel, Field, HttpUrl
 
 
@@ -31,6 +31,6 @@ class ResourcesListResponse(BaseModel):
     data: List[ResourceData]
     support: Support
     page: int = Field(gt=0)
-    per_page: int = Field(gt=0)
+    per_page: Literal[6]
     total: int = Field(gt=0)
     total_pages: int = Field(gt=0)

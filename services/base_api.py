@@ -16,3 +16,9 @@ class BaseAPI:
             headers["x-api-key"] = api_key
         # применяем заголовки к сессии
         self.session.headers.update(headers)
+
+
+def check_status_code(response, expected_status_code):
+    """Проверка статус-кода для негативных сценариев"""
+    assert response.status_code == expected_status_code,\
+        f"Ожидался статус-код=={expected_status_code}, но получен {response.status_code} "

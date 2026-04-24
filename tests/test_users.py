@@ -1,6 +1,7 @@
 import allure
 import pytest
 
+from services.base_api import check_status_code
 from services.reqres_in.users.delete_user import DeleteUser
 from services.reqres_in.users.get_user import GetUser, assert_user_data_is_correct
 from services.reqres_in.users.get_users import GetUsers, assert_users_data_is_correct
@@ -55,7 +56,7 @@ class TestUsers:
             response, validated_data = GetUser(env_config).get_user(invalid_id, validate=False)
 
         with allure.step('Проверка статус-кода от сервера'):
-            assert response.status_code == 404
+            check_status_code(response, 404)
 
 
     @pytest.mark.smoke
