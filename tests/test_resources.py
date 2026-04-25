@@ -1,51 +1,47 @@
 import allure
 import pytest
 
-from services.base_api import check_status_code
-from services.reqres_in.resources.get_resource import GetResource, assert_resource_data_is_correct
-from services.reqres_in.resources.get_resources import GetResources, assert_resources_data_is_correct
+from services.reqres_in.resources.assertions import (
+    assert_resource_data,
+    assert_resources_list,
+)
+from utils.assertions import assert_status_code
 
-@allure.feature('Resources')
+
+@allure.feature("Resources")
 class TestResources:
-
-
     @pytest.mark.regression
-    @allure.title('Получение списка ресурсов')
+    @allure.title("Получение списка ресурсов")
     @allure.testcase("https://jira.example.com/TC-8", "TC-8")
-    def test_get_resources_list(self, env_config):
-        """Получение списка ресурсов"""
-        with allure.step('Отправка запроса и валидация структуры ответа'):
-            page = 2
-            response, validated_data = GetResources(env_config).get_resources(page)
+    def test_get_resources_list(self, api, test_data):
+        """Проверяет получение списка ресурсов с корректными данными пагинации."""
+        with allure.step("Отправка запроса и валидация структуры ответа"):
+            page = test_data["resources"]["pagination_page"]
+            response, validated = api.resources.list(page)
 
-        with allure.step('Проверка корректности полученных данных'):
-            assert_resources_data_is_correct(response, validated_data, 2)
-
+        with allure.step("Проверка корректности полученных данных"):
+            assert_resources_list(response, validated, page)
 
     @pytest.mark.regression
-    @allure.title('Получение одного ресурса')
+    @allure.title("Получение одного ресурса")
     @allure.testcase("https://jira.example.com/TC-9", "TC-9")
-    def test_get_resource(self, env_config):
-        """Получение одного ресурса"""
-        with allure.step('Отправка запроса и валидация структуры ответа'):
-            resource_id = 2
-            response, validated_data = GetResource(env_config).get_resource(resource_id)
+    def test_get_resource(self, api, test_data):
+        """Проверяет успешное получение данных существующего ресурса по ID."""
+        with allure.step("Отправка запроса и валидация структуры ответа"):
+            resource_id = test_data["resources"]["valid_id"]
+            response, validated = api.resources.get_by_id(resource_id)
 
-        with allure.step('Проверка корректности полученных данных'):
-            assert_resource_data_is_correct(response, validated_data, resource_id)
-
+        with allure.step("Проверка корректности полученных данных"):
+            assert_resource_data(response, validated, resource_id)
 
     @pytest.mark.regression
-    @allure.title('Получение несуществующего ресурса')
+    @allure.title("Получение несуществующего ресурса")
     @allure.testcase("https://jira.example.com/TC-10", "TC-10")
-    def test_get_unexisted_resource(self, env_config):
-        """Получение несуществующего ресурса"""
-        with allure.step('Отправка запроса на получение несуществующего юзера'):
-            unexisted_resource = 23
-            response, _ = GetResource(env_config).get_resource(
-                unexisted_resource,
-                validate=False
-            )
+    def test_get_unexisted_resource(self, api, test_data):
+        """Проверяет, что запрос несуществующего ресурса возвращает 404."""
+        with allure.step("Отправка запроса на получение несуществующего ресурса"):
+            invalid_id = test_data["resources"]["invalid_id"]
+            response, _ = api.resources.get_by_id(invalid_id, validate=False)
 
-        with allure.step('Проверка статус-кода'):
-            check_status_code(response, 404)
+        with allure.step("Проверка статус-кода"):
+            assert_status_code(response, 404)

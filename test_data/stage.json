@@ -1,0 +1,19 @@
+{
+  "users": {
+    "valid_id": 2,
+    "invalid_id": 23,
+    "pagination_page": 2
+  },
+  "resources": {
+    "valid_id": 2,
+    "invalid_id": 23,
+    "pagination_page": 2
+  },
+  "auth": {
+    "register_valid": {"email": "eve.holt@reqres.in", "password": "pistol"},
+    "register_invalid": {"email": "eve.holt@reqres.in"},
+    "login_valid": {"email": "eve.holt@reqres.in", "password": "cityslicka"},
+    "login_invalid": {"email": "peter@klaven"},
+    "expected_error": "Missing password"
+  }
+}
