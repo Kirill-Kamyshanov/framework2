@@ -5,8 +5,13 @@ from services.base_api import check_status_code
 from services.reqres_in.resources.get_resource import GetResource, assert_resource_data_is_correct
 from services.reqres_in.resources.get_resources import GetResources, assert_resources_data_is_correct
 
-
+@allure.feature('Resources')
 class TestResources:
+
+
+    @pytest.mark.regression
+    @allure.title('Получение списка ресурсов')
+    @allure.testcase("https://jira.example.com/TC-8", "TC-8")
     def test_get_resources_list(self, env_config):
         """Получение списка ресурсов"""
         with allure.step('Отправка запроса и валидация структуры ответа'):
@@ -17,7 +22,9 @@ class TestResources:
             assert_resources_data_is_correct(response, validated_data, 2)
 
 
-
+    @pytest.mark.regression
+    @allure.title('Получение одного ресурса')
+    @allure.testcase("https://jira.example.com/TC-9", "TC-9")
     def test_get_resource(self, env_config):
         """Получение одного ресурса"""
         with allure.step('Отправка запроса и валидация структуры ответа'):
@@ -28,9 +35,9 @@ class TestResources:
             assert_resource_data_is_correct(response, validated_data, resource_id)
 
 
-
-
-
+    @pytest.mark.regression
+    @allure.title('Получение несуществующего ресурса')
+    @allure.testcase("https://jira.example.com/TC-10", "TC-10")
     def test_get_unexisted_resource(self, env_config):
         """Получение несуществующего ресурса"""
         with allure.step('Отправка запроса на получение несуществующего юзера'):

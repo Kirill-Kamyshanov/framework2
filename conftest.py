@@ -50,9 +50,9 @@ def delete_user(env_config, user_data):
     """Автоматическая очистка созданного пользователя после теста"""
     yield
 
-    user_id = user_data["id"]
     try:
-        DeleteUser(env_config).delete(user_id)
-        print(f"Пользователь {user_id} успешно удалён")
+        DeleteUser(env_config).delete(user_data["id"])
+        print(f"Пользователь {user_data["id"]} успешно удалён")
     except Exception as e:
-        print(f"Ошибка при удалении {user_id}: {e}")
+        print(f"Ошибка при удалении {user_data}: {e}")
+

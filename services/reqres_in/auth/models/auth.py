@@ -30,4 +30,4 @@ class LoginResponse(BaseModel):
 
 class ErrorResponse(BaseModel):
     """Ответ с ошибкой при регистрации/авторизации"""
-    message: Literal["Куда собрался-то? Не пущу никуда сказал."]
+    message: str

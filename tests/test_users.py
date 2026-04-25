@@ -11,27 +11,14 @@ from services.reqres_in.users.put_update import UpdateUserPut, assert_user_updat
 from services.reqres_in.users.models.user import CreateUserRequest, UpdateUserRequest
 
 
-# @pytest.fixture
-# def created_user_ids():
-#     """Список ID созданных пользователей для cleanup."""
-#     return []
-#
-#
-# @pytest.fixture
-# def cleanup_users(env_config, created_user_ids):
-#     """Фикстура для удаления тестовых пользователей после теста."""
-#     yield
-#
-#     for user_id in created_user_ids:
-#         try:
-#             DeleteUser(env_config).delete(user_id)
-#         except Exception as e:
-#             print(f"Ошибка при удалении {user_id}: {e}")
-
 
 
 @allure.feature('Users')
 class TestUsers:
+
+    @pytest.mark.regression
+    @allure.title('Проверка корректности пагинации')
+    @allure.testcase("https://jira.example.com/TC-2", "TC-2")
     def test_users_pagination(self, env_config):
         with allure.step('Отправка GET-запроса с пагинацией'):
             page = 2
@@ -41,6 +28,10 @@ class TestUsers:
             assert_users_data_is_correct(response, validated_data, page)
 
 
+    @pytest.mark.smoke
+    @pytest.mark.regression
+    @allure.title('Получение данных о пользователе')
+    @allure.testcase("https://jira.example.com/TC-3", "TC-3")
     def test_get_user(self, env_config):
         with allure.step('Получение данных о пользователе'):
             user_id = 2
@@ -50,6 +41,9 @@ class TestUsers:
             assert_user_data_is_correct(response, validated_data, user_id)
 
 
+    @pytest.mark.regression
+    @allure.title('Получение данных о несуществующем пользователе')
+    @allure.testcase("https://jira.example.com/TC-4", "TC-4")
     def test_get_user_negative(self, env_config):
         with allure.step('Попытка получить данные о несуществующем пользователе'):
             invalid_id = 23
@@ -81,6 +75,9 @@ class TestUsers:
         user_data.update(validated_data.model_dump())
 
 
+    @pytest.mark.regression
+    @allure.title('Обновление данных методом PUT')
+    @allure.testcase("https://jira.example.com/TC-5", "TC-5")
     def test_update_user_put(self, env_config):
         with allure.step('Получение исходных данных о пользователе'):
             user_id = 2
@@ -97,8 +94,9 @@ class TestUsers:
             assert_user_updated_put_correctly(response, validated_data, **new_data.model_dump(exclude_none=True))
 
 
-
-
+    @pytest.mark.regression
+    @allure.title('Обновление пользователя методом PATCH')
+    @allure.testcase("https://jira.example.com/TC-2", "TC-2")
     def test_update_user_patch(self, env_config):
         with allure.step('Получение исходных данных о пользователе'):
             user_id = 2
@@ -115,11 +113,9 @@ class TestUsers:
             assert_user_updated_correctly(response, validated_data, **new_data.model_dump(exclude_none=True))
 
 
-
-    @pytest.mark.smoke
     @pytest.mark.regression
     @allure.title('Удаление пользователя')
-    @allure.testcase("https://jira.example.com/TC-1", "TC-2")
+    @allure.testcase("https://jira.example.com/TC-7", "TC-7")
     def test_delete_user(self, env_config):
         with allure.step('Удаление пользователя'):
             user_id = 2
