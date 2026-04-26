@@ -1,104 +1,65 @@
 import allure
-import pook
 import pytest
-import requests
 
-from conftest import env_config
-from services.reqres_in.auth.login_user import assert_login_is_successful, LoginUser
-from services.reqres_in.auth.models.auth import LoginRequest
+from services.reqres_in.auth.assertions import (
+    assert_login_failed,
+    assert_login_successful,
+    assert_register_failed,
+    assert_register_successful,
+)
+from services.reqres_in.auth.models.auth import LoginRequest, RegisterRequest
 
 
+@allure.feature("Authentication")
 class TestAuth:
-    base_url = "https://reqres.in/api"
-    valid_request_body = {"email": "example@example.com", "password": "password123"}
-    invalid_request_body = {"email": "example@example.com"}
+    @pytest.mark.smoke
+    @pytest.mark.regression
+    @allure.title("Успешная регистрация")
+    @allure.testcase("https://jira.example.com/TC-11", "TC-11")
+    def test_register_successful(self, api, test_data):
+        """Проверяет успешную регистрацию с валидными данными."""
+        with allure.step("Подготовка тела запроса"):
+            body = RegisterRequest(**test_data["auth"]["register_valid"]).model_dump()
 
-    success_auth_response_body = {"token": "yalubluykabachki"}
+        with allure.step("Отправка запроса на регистрацию"):
+            response, validated = api.auth.register(body)
 
-    success_register_response_body = {"message": "success"}
-    failure_register_response_body = {"message": "access denied"}
+        with allure.step("Валидация ответа"):
+            assert_register_successful(response, validated)
 
+    @pytest.mark.regression
+    @allure.title("Регистрация с невалидными входными данными")
+    @allure.testcase("https://jira.example.com/TC-12", "TC-12")
+    def test_register_negative(self, api, test_data):
+        """Проверяет, что регистрация без пароля возвращает 400 с описанием ошибки."""
+        with allure.step("Отправка запроса без пароля"):
+            response, validated = api.auth.register_expect_error(test_data["auth"]["register_invalid"])
 
-# нет
-    @pook.on
-    def test_register_successful(self):
-        """Успешная регистрация с валидными данными"""
-        with allure.step('Настройка тестового мока:'):
-            pook.post(f'{self.base_url}/register',
-                      json=self.valid_request_body,
-                      status=200,
-                      response_json=self.success_response_body
-                      )
+        with allure.step("Валидация ответа"):
+            assert_register_failed(response, validated, test_data["auth"]["expected_error"])
 
-        with allure.step('Отправка запроса и валидация ответа:'):
-            response = requests.post(f'{self.base_url}/register',json= self.valid_request_body)
+    @pytest.mark.smoke
+    @pytest.mark.regression
+    @allure.title("Успешная авторизация")
+    @allure.testcase("https://jira.example.com/TC-13", "TC-13")
+    def test_auth_successful(self, api, test_data):
+        """Проверяет успешную авторизацию с валидными данными."""
+        with allure.step("Подготовка тела запроса"):
+            body = LoginRequest.model_validate(test_data["auth"]["login_valid"]).model_dump()
 
-            assert response.status_code == 200
-            assert response.json() == self.success_response_body
+        with allure.step("Отправка запроса на авторизацию"):
+            response, validated = api.auth.login(body)
 
+        with allure.step("Валидация ответа"):
+            assert_login_successful(response, validated)
 
-    # нет
-    @pook.on
-    def test_register_negative(self):
-        """Неуспешная регистрация без пароля"""
-        with allure.step('Подготовка тестовых данных:'):
-            pook.post(f'{self.base_url}/register',
-                      json=self.invalid_request_body,
-                      status=400,
-                      response_json=self.failure_response_body
-                      )
+    @pytest.mark.regression
+    @allure.title("Авторизация с невалидными входными данными")
+    @allure.testcase("https://jira.example.com/TC-14", "TC-14")
+    def test_auth_negative(self, api, test_data):
+        """Проверяет, что авторизация без пароля возвращает 400 с описанием ошибки."""
+        with allure.step("Отправка запроса без пароля"):
+            response, validated = api.auth.login_expect_error(test_data["auth"]["login_invalid"])
 
-        with allure.step('Отправка запроса и валидация ответа:'):
-            response = requests.post(f'{self.base_url}/register', json=self.invalid_request_body)
-
-            assert response.status_code == 400
-            assert response.json() == self.failure_response_body
-
-
-
-# ЕС
-    @pook.on
-    def test_auth_successful(self, env_config):
-        """Успешная авторизация"""
-        with allure.step('Подготовка тестовых данных:'):
-            pook.post(f'{self.base_url}/login',
-                      json=self.valid_request_body,
-                      status=200,
-                      response_json=self.success_auth_response_body
-                      )
-
-        with allure.step('Отправка запроса:'):
-            req_body = LoginRequest.model_validate(self.valid_request_body).model_dump()
-            print(req_body)
-
-            response, validated_data = LoginUser(env_config).login(
-                req_body
-            )
-
-        with allure.step('Валидация ответа:'):
-            assert_login_is_successful(response, validated_data, self.success_auth_response_body)
-
-
-
-    # нет
-    @pook.on
-    def test_auth_negative(self):
-        """Неуспешная авторизация без пароля"""
-        with allure.step('Подготовка тестовых данных:'):
-            pook.post(f'{self.base_url}/login',
-                      json=self.invalid_request_body,
-                      status=400,
-                      response_json=self.failure_response_body
-                      )
-
-        with allure.step('Отправка запроса и валидация ответа:'):
-            response = requests.post(f'{self.base_url}/login',json= self.invalid_request_body)
-
-            assert response.status_code == 400
-            assert response.json() == self.failure_response_body
-
-
-
-
-
-
+        with allure.step("Валидация ответа"):
+            assert_login_failed(response, validated, test_data["auth"]["expected_error"])

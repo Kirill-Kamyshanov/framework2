@@ -1,42 +1,49 @@
-import os
-from dataclasses import dataclass
-from enum import Enum
-from pathlib import Path
-from dotenv import load_dotenv
+from enum import StrEnum
 
-# Загружаем переменные из .env файла (ищем в корне проекта)
-_env_path = Path(__file__).parent.parent / ".env"
-load_dotenv(_env_path)
+from pydantic import Field
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
-class Environment(str, Enum):
+
+class Environment(StrEnum):
+    """Перечень поддерживаемых окружений запуска тестов."""
+
     DEV = "dev"
     STAGE = "stage"
 
-    def __str__(self):
-        return {
-            self.DEV: "Dev",
-            self.STAGE: "Stage"
-        }[self]
+    def __str__(self) -> str:
+        """Человекочитаемое представление для логов и Allure."""
+        return self.value.capitalize()
 
 
-@dataclass
-class EnvironmentConfig:
+class EnvironmentConfig(BaseSettings):
+    """Конфиг окружения. URL фиксированы в коде, секреты подтягиваются из .env / переменных окружения."""
+
+    model_config = SettingsConfigDict(
+        env_file=".env",
+        env_file_encoding="utf-8",
+        env_prefix="",
+        extra="ignore",
+        case_sensitive=False,
+    )
+
     reqres_url: str
-    reqres_api_key: str
+    reqres_api_key: str = Field(default="")
 
-    def __str__(self):
+    def __str__(self) -> str:
+        """Краткое представление конфига для логов."""
         return f"- Reqres API: {self.reqres_url}"
 
-# API ключ читается из переменной окружения REQRES_API_KEY
-_api_key = os.environ.get("REQRES_API_KEY", "")
 
-environments = {
-    Environment.DEV: EnvironmentConfig(
-        reqres_url="https://reqres.in/api",
-        reqres_api_key=_api_key
-    ),
-    Environment.STAGE: EnvironmentConfig(
-        reqres_url="https://reqres.in/api",
-        reqres_api_key=_api_key
-    )
+_URLS: dict[Environment, str] = {
+    Environment.DEV: "https://reqres.in/api",
+    Environment.STAGE: "https://reqres.in/api",
 }
+
+
+def load_environment(env: Environment | str) -> EnvironmentConfig:
+    """Возвращает конфиг для запрошенного окружения.
+
+    URL берётся из статической таблицы _URLS, секреты — из .env / env vars.
+    """
+    env = env if isinstance(env, Environment) else Environment(env.lower())
+    return EnvironmentConfig(reqres_url=_URLS[env])
