@@ -6,12 +6,18 @@ on:
 
 jobs:
   run_python_tests:
-    runs-on: python:3.14-alpine3.24
+    runs-on: ubuntu-latest
 
     steps:
       # Клонирование кода репозитория на машину Github actions
       - name: Checkout repository
       - uses: actions/checkout@v6
+
+      # Установка Python
+      - name: set up Python
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.14'
 
       # Установка зависимостей проекта
       - name: Install dependencies
