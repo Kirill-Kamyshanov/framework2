@@ -32,16 +32,16 @@ jobs:
         env:
           REQRES_API_KEY: ${{ secrets.REQRES_API_KEY }}
 
-      - name: Generates Allure Report with history
-        uses: simple-elf/allure-report-action@v1.7
-        with:
-          allure_results: allure-results
-
-#      - name: Upload Test results
-#        uses: actions/upload-artifact@v2
+#      - name: Generates Allure Report with history
+#        uses: simple-elf/allure-report-action@v1.7
 #        with:
-#          name: allure-results
-#          path: allure-results
+#          allure_results: allure-results
+
+      - name: Upload Test results
+        uses: actions/upload-artifact@v2
+        with:
+          name: allure-results
+          path: allure-results
 #
 #
 #  deploy_allure_report:
