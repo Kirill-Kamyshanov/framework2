@@ -72,7 +72,7 @@ jobs:
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          github_token: ${{ secrets.TOTOSHKA }}
           publish_dir: ./allure-report
           publish_branch: gh-pages
           keep_files: false
