@@ -1,8 +1,12 @@
 name: run tests
 
 on:
-  - push
-  - pull_request
+  push:
+    branches-ignore:
+      - gh-pages
+  pull_request:
+    branches:
+      - main
 
 jobs:
   run_python_tests:
@@ -28,12 +32,12 @@ jobs:
       # Запуск тестов
       - name: run tests
         run: pytest
-        continue-on-error: true
         env:
           REQRES_API_KEY: ${{ secrets.REQRES_API_KEY }}
 
       # Публикация артефакта: /allure-results
       - name: Upload Test results
+        if: always()
         uses: actions/upload-artifact@v7
         with:
           name: allure-results
@@ -41,6 +45,7 @@ jobs:
 
       # Генерация /allure-report
       - name: generate allure-report
+        if: always()
         uses: simple-elf/allure-report-action@v1.15
         with:
           allure_results: allure-results
@@ -49,6 +54,7 @@ jobs:
 
       # Публикация артефакта /allure-report
       - name: Upload allure-report as artifact
+        if: always()
         uses: actions/upload-artifact@v7
         with:
           name: allure-report
@@ -58,6 +64,7 @@ jobs:
 
   deploy_report:
     needs: run_python_tests
+    if: always()
     runs-on: ubuntu-latest
     steps:
 

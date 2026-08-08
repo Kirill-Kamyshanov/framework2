@@ -25,6 +25,7 @@ class TestUsers:
 
         with allure.step("Валидация тела ответа"):
             assert_users_list(response, validated, page)
+            assert False
 
     @pytest.mark.smoke
     @pytest.mark.regression
