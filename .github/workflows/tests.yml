@@ -39,10 +39,12 @@ jobs:
           name: allure-results
           path: allure-results
 
+      # Генерация /allure-results
       - name: generate allure-report
         uses: simple-elf/allure-report-action@v1.7
         with:
-          allure_results: allure-results
+          name: allure-results
+          path: allure-results
 
 
 #  generate_allure_report:
