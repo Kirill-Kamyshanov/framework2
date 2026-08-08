@@ -39,16 +39,41 @@ jobs:
           name: allure-results
           path: allure-results
 
-      # Генерация /allure-results
+      # Генерация /allure-report
       - name: generate allure-report
-        uses: simple-elf/allure-report-action@v1.7
+        uses: simple-elf/allure-report-action@v1.15
         with:
-          name: allure-results
-          path: allure-results
+          allure_results: allure-results
+          gh_pages: gh-pages
+          allure_report: allure-report
+
+      - name: Upload allure-report as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: allure-report
+          path: allure-report
 
 
-#  generate_allure_report:
-#    runs-on: ubuntu-latest
-#    steps:
-#      - name: Deploy report to Github Pages
-#        uses: peaceiris/actions-gh-pages@v4
+
+  deploy_report:
+    needs: run_python_tests
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Download allure-report
+        uses: actions/download-artifact@v4
+        with:
+          name: allure-report
+          path: allure-report
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./allure-report
+          publish_branch: gh-pages
+          keep_files: false
+          destination_dir: .
