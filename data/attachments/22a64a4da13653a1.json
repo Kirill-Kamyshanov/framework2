@@ -1,0 +1,20 @@
+# request_id=696c236032774e1d8cf0001ef132671c status=201 elapsed_ms=198
+{
+  "name": "Allen Avery",
+  "job": "Midwife",
+  "id": "670",
+  "createdAt": "2026-08-08T11:53:56.290Z",
+  "_meta": {
+    "powered_by": "ReqRes",
+    "docs_url": "https://app.reqres.in/documentation",
+    "upgrade_url": "https://app.reqres.in/upgrade",
+    "example_url": "https://app.reqres.in/examples/notes-app",
+    "variant": "v1_b",
+    "message": "This is a read-only demo endpoint. Sign up to create your own collections with full CRUD and auth.",
+    "cta": {
+      "label": "Get started",
+      "url": "https://app.reqres.in/upgrade"
+    },
+    "context": "legacy_success"
+  }
+}
