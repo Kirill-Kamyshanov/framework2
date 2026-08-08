@@ -33,11 +33,11 @@ jobs:
           REQRES_API_KEY: ${{ secrets.REQRES_API_KEY }}
 
       # Генерация /allure-results
-      - name: Upload Test results
-        uses: actions/upload-artifact@v7
-        with:
-          name: allure-results
-          path: allure-results
+#      - name: Upload Test results
+#        uses: actions/upload-artifact@v7
+#        with:
+#          name: allure-results
+#          path: allure-results
 
       # Генерация /allure-report
       - name: generate allure-report
@@ -47,6 +47,7 @@ jobs:
           gh_pages: gh-pages
           allure_report: allure-report
 
+      # Создание артефакта
       - name: Upload allure-report as artifact
         uses: actions/upload-artifact@v4
         with:
@@ -63,12 +64,14 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v6
 
+      # Скачивание артефакта с отчётом
       - name: Download allure-report
         uses: actions/download-artifact@v4
         with:
           name: allure-report
           path: allure-report
 
+      # Публикация отчёта на GitHub Pages
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
