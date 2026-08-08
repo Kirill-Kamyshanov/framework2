@@ -1,2 +1,0 @@
-INFO     api:base_api.py:96 api_request method=POST url=https://reqres.in/api/users status=201 request_id=542a16a4f1514e368edd48e4fc01ad86 elapsed_ms=317
-INFO     api:base_api.py:96 api_request method=DELETE url=https://reqres.in/api/users/957 status=204 request_id=a2dbe1d643b94a03b62b630293a06eb8 elapsed_ms=145

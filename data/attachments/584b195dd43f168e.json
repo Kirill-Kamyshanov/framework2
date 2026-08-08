@@ -1,0 +1,4 @@
+# request_id=d518db78575c40d7a7296ac088b3bcce status=400 elapsed_ms=305
+{
+  "error": "Missing password"
+}
