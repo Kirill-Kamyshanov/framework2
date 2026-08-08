@@ -35,7 +35,7 @@ class TestAuth:
         with allure.step("Отправка запроса без пароля"):
             response, validated = api.auth.register_expect_error(test_data["auth"]["register_invalid"])
 
-        with allure.step("Валидация ответа"):
+        with allure.step("Валидация ответа "):
             assert_register_failed(response, validated, test_data["auth"]["expected_error"])
             assert False
 
