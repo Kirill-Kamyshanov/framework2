@@ -38,7 +38,7 @@ jobs:
 #          allure_results: allure-results
 
       - name: Upload Test results
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v7
         with:
           name: allure-results
           path: allure-results
