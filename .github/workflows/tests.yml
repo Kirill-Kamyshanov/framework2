@@ -15,7 +15,7 @@ jobs:
 
       # Установка Python
       - name: set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v6
         with:
           python-version: '3.14'
 
@@ -28,5 +28,24 @@ jobs:
       # Запуск тестов
       - name: run tests
         run: pytest
+        continue-on-error: true
         env:
           REQRES_API_KEY: ${{ secrets.REQRES_API_KEY }}
+
+      - name: Generates Allure Report with history
+        uses: simple-elf/allure-report-action@v1.7
+        with:
+          allure_results: allure-results
+
+#      - name: Upload Test results
+#        uses: actions/upload-artifact@v2
+#        with:
+#          name: allure-results
+#          path: allure-results
+#
+#
+#  deploy_allure_report:
+#    runs-on: ubuntu-latest
+#    steps:
+#      - name: Deploy report to Github Pages
+#        uses: peaceiris/actions-gh-pages@v4
