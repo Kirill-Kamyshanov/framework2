@@ -1,1 +1,0 @@
-INFO     api:base_api.py:96 api_request method=PUT url=https://reqres.in/api/users/2 status=200 request_id=4089645fcca74407ac2b6549061f618e elapsed_ms=209
