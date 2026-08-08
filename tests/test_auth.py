@@ -37,7 +37,6 @@ class TestAuth:
 
         with allure.step("Валидация ответа "):
             assert_register_failed(response, validated, test_data["auth"]["expected_error"])
-            assert False
 
     @pytest.mark.smoke
     @pytest.mark.regression
