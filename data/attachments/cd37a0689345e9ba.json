@@ -1,0 +1,19 @@
+# request_id=854f99a4eaa243aba5cfa990fb078dbc status=200 elapsed_ms=174
+{
+  "name": "Katherine Smith MD",
+  "job": "Designer, textile",
+  "updatedAt": "2026-08-09T06:05:31.557Z",
+  "_meta": {
+    "powered_by": "ReqRes",
+    "docs_url": "https://app.reqres.in/documentation",
+    "upgrade_url": "https://app.reqres.in/upgrade",
+    "example_url": "https://app.reqres.in/examples/notes-app",
+    "variant": "v1_b",
+    "message": "This is a read-only demo endpoint. Sign up to create your own collections with full CRUD and auth.",
+    "cta": {
+      "label": "Get started",
+      "url": "https://app.reqres.in/upgrade"
+    },
+    "context": "legacy_success"
+  }
+}

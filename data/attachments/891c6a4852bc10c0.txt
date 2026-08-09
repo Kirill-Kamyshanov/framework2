@@ -1,0 +1,1 @@
+INFO     api:base_api.py:96 api_request method=PATCH url=https://reqres.in/api/users/2 status=200 request_id=ca25d4b43f1e445d82dcf1f5c42c7708 elapsed_ms=174

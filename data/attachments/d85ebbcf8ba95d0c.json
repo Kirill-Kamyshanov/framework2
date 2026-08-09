@@ -1,0 +1,18 @@
+{
+  "request_id": "8e65b24d68174296a904268f90304646",
+  "method": "GET",
+  "url": "https://reqres.in/api/users",
+  "headers": {
+    "User-Agent": "python-requests/2.32.5",
+    "Accept-Encoding": "gzip, deflate, br, zstd",
+    "Accept": "application/json",
+    "Connection": "keep-alive",
+    "Content-Type": "application/json",
+    "x-api-key": "pub_f6037cc861d2afb108f79be7501585d460d58ccb5b98f04ab137141e6c257e00",
+    "X-Request-Id": "8e65b24d68174296a904268f90304646"
+  },
+  "params": {
+    "page": 2
+  },
+  "body": null
+}

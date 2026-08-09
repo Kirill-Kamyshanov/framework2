@@ -1,0 +1,19 @@
+{
+  "request_id": "bd15df2c49204f2d8ff6e1cb73bb7cd3",
+  "method": "POST",
+  "url": "https://reqres.in/api/users",
+  "headers": {
+    "User-Agent": "python-requests/2.32.5",
+    "Accept-Encoding": "gzip, deflate, br, zstd",
+    "Accept": "application/json",
+    "Connection": "keep-alive",
+    "Content-Type": "application/json",
+    "x-api-key": "pub_f6037cc861d2afb108f79be7501585d460d58ccb5b98f04ab137141e6c257e00",
+    "X-Request-Id": "bd15df2c49204f2d8ff6e1cb73bb7cd3"
+  },
+  "params": null,
+  "body": {
+    "name": "Darren Hunt",
+    "job": "Warden/ranger"
+  }
+}

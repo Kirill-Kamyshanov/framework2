@@ -1,0 +1,18 @@
+{
+  "request_id": "97935cda69134e468c218b0ab40d74bf",
+  "method": "POST",
+  "url": "https://reqres.in/api/login",
+  "headers": {
+    "User-Agent": "python-requests/2.32.5",
+    "Accept-Encoding": "gzip, deflate, br, zstd",
+    "Accept": "application/json",
+    "Connection": "keep-alive",
+    "Content-Type": "application/json",
+    "x-api-key": "pub_f6037cc861d2afb108f79be7501585d460d58ccb5b98f04ab137141e6c257e00",
+    "X-Request-Id": "97935cda69134e468c218b0ab40d74bf"
+  },
+  "params": null,
+  "body": {
+    "email": "peter@klaven"
+  }
+}

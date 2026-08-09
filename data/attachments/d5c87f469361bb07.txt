@@ -1,1 +1,0 @@
-INFO     api:base_api.py:96 api_request method=POST url=https://reqres.in/api/users status=429 request_id=40928291b9544c39aeb4fa9388fba994 elapsed_ms=122
